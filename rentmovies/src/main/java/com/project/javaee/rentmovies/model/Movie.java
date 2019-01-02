@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.print.attribute.standard.DateTimeAtCompleted;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity(name = "Movie")

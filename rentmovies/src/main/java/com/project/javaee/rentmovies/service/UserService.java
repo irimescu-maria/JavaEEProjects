@@ -1,6 +1,5 @@
 package com.project.javaee.rentmovies.service;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.project.javaee.rentmovies.model.User;
@@ -9,5 +8,5 @@ import com.project.javaee.rentmovies.model.User;
 public interface UserService {
 	public User findUserByEmail(String email);
 	
-	public void saveUser(User user);
+	public User saveUser(User user);
 }

@@ -38,14 +38,9 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	@Transactional
-	public void saveUser(User user) {
-		System.out.println("Save user " + user);
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user.setActive(2);
-		
-		Role userRole = roleRepository.findByRole("CUSTOMER");
-		user.setRoles(new HashSet<Role>(Arrays.asList(userRole)));
-		userRepository.save(user);
+	public User saveUser(User user) {
+	userRepository.save(user);
+return user;
 	}
 
 }

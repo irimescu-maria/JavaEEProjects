@@ -1,45 +1,23 @@
-package com.project.javaee.rentmovies.model;
+package com.project.javaee.rentmovies.dto;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
-@Entity(name = "User")
-public class User {
-	
-	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "id")
+public class UserDTO {
+
 	private Long id;
-	
-	@Column(name = "email", nullable = false, unique = true)
+
 	private String email;
 	
-	@Column(name = "firstname")
 	private String firstname;
 	
-	@Column(name = "lastname")
 	private String lastname;
 		
-	@Column(name = "password")
 	private String password;
 	
-	@Column(name = "active")
 	private int active;
 	
-	@ManyToOne
-	@JoinColumn(name = "roleId", nullable = false)
-	private Role role;
-	
-	public User() {
-		
-	}
+	@NotNull
+	private Long roleId;
 
 	public Long getId() {
 		return id;
@@ -89,15 +67,14 @@ public class User {
 		this.active = active;
 	}
 
-	public Role getRole() {
-		return role;
+	public Long getRoleId() {
+		return roleId;
 	}
 
-	public void setRole(Role role) {
-		this.role = role;
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
 	}
-	
-	
 
+	
 
 }
