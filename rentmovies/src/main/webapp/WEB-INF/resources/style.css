@@ -9,3 +9,44 @@
 ul > li > a{
 	display: inline;
 }
+
+.shadow div {
+transition: .5s ease;
+}
+
+.column{
+	float: left;
+  width: 33.33%;
+  padding: 10px;
+  height: 300px;
+  border: 1px solid black;
+}
+.row:hover{
+	box-shadow:
+1px 1px #373737,
+2px 2px #373737,
+3px 3px #373737,
+4px 4px #373737,
+5px 5px #373737,
+6px 6px #373737;
+-webkit-transform: translateX(-3px);
+transform: translateX(-3px);
+transition: .5s ease;
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.shadow div:hover{
+box-shadow:
+1px 1px #373737,
+2px 2px #373737,
+3px 3px #373737,
+4px 4px #373737,
+5px 5px #373737,
+6px 6px #373737;
+-webkit-transform: translateX(-3px);
+transform: translateX(-3px);
+transition: .5s ease;
+}

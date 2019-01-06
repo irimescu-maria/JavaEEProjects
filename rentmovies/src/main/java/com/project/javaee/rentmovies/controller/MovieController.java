@@ -1,7 +1,13 @@
 package com.project.javaee.rentmovies.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +18,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.project.javaee.rentmovies.dto.MovieDTO;
@@ -29,6 +37,10 @@ public class MovieController {
 
 	@Autowired
 	private GenreService genreService;
+	
+	//Save the upload file to this folder
+	private static String UPLOADED_FOLDER = "C:\\Users\\Maria\\Pictures\\Camera Roll";
+	private String fileName;
 
 	@RequestMapping(value = "/movies", method = RequestMethod.GET)
 	public String getMovies(Model model) {
@@ -51,16 +63,58 @@ public class MovieController {
 	}
 
 	@RequestMapping(value = "/movies/add", method = RequestMethod.POST)
-	public String addMovie(@Valid @ModelAttribute("movie") MovieDTO movieDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+	public String addMovie(@Valid @ModelAttribute("movie") MovieDTO movieDTO,
+			BindingResult result, Model model,
+			RedirectAttributes redirectAttributes,
+		final	@RequestParam(required = false) CommonsMultipartFile[]  file, HttpServletRequest request) {
 
+		fileName = request.getParameter("imagePath");
+		if(file != null) {
+			for(CommonsMultipartFile  aFile : file) {
+				if(aFile.isEmpty()) {
+					continue;
+				}else {
+					Movie movie = new Movie();
+					 
+					movie.setName(movieDTO.getName());
+					movie.setImagePath(aFile.getOriginalFilename().toString());
+					movie.setDateAdded(movieDTO.getDateAdded());
+					movie.setReleaseDate(movieDTO.getReleaseDate());
+					movie.setNumberAvailable(movieDTO.getNumberAvailable());
+					movie.setNumberInStock(movieDTO.getNumberInStock());
+					movie.setGenre(new Genre(movieDTO.getGenreId()));
+					movieService.add(movie);
+					redirectAttributes.addFlashAttribute("message", "Successfully added..");
+					return "redirect:/movies";
+				}
+			}
+		}
+		/*if(file.isEmpty()) {
+			redirectAttributes.addFlashAttribute("message", "Please select a file to upload!");
+			return "redirect:/addMovie";
+		}*/
+				
 		if(result.hasErrors()) {
 			//List of all genres to model to populate the genre drop down
 			List<Genre> genres = genreService.findAllGenres();
 			model.addAttribute("genres", genres);
 			return "addMovie";
 		}else {
+			/*Path path = null;
+			//Get the file save it somewhere
+			try {
+				byte[] bytes = file.getBytes();
+				path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
+				Files.write(path, bytes);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			*/
 			Movie movie = new Movie();
+			 
 			movie.setName(movieDTO.getName());
+			//movie.setImagePath(file.getName().toString());
 			movie.setDateAdded(movieDTO.getDateAdded());
 			movie.setReleaseDate(movieDTO.getReleaseDate());
 			movie.setNumberAvailable(movieDTO.getNumberAvailable());

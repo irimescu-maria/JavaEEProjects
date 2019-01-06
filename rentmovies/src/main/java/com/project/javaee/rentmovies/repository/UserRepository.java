@@ -9,4 +9,6 @@ import com.project.javaee.rentmovies.model.User;
 public interface UserRepository extends JpaRepository<User, Long>{
 	
 	User findByEmail(String email);
+	
+	User findByFirstname(String firstname);
 }

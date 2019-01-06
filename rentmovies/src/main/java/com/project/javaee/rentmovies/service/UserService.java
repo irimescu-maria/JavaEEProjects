@@ -8,5 +8,11 @@ import com.project.javaee.rentmovies.model.User;
 public interface UserService {
 	public User findUserByEmail(String email);
 	
+	public User findUserByFirstname(String firstname);
+	
+
+	
 	public User saveUser(User user);
+	
+	public User loginUser(String email, String password);
 }

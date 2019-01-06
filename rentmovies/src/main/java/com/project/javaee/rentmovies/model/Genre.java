@@ -28,8 +28,8 @@ public class Genre {
 		
 	}
 	
-	public Genre(Long id) {
-		this.id = id;
+	public Genre(Long genreId) {
+		this.id = genreId;
 	}
 	public Long getId() {
 		return id;

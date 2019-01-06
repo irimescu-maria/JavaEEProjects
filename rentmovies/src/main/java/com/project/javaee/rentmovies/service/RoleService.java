@@ -12,8 +12,8 @@ import com.project.javaee.rentmovies.repository.RoleRepository;
 @Service
 public interface RoleService {
 
-
-	
 	public List<Role> findAllRoles();
+	
+	public Role findRoleById(Long id);
 
 }

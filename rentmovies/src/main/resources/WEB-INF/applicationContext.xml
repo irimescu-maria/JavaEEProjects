@@ -13,4 +13,6 @@
   
   <!-- Bean used to encode passwords with BCrypt (Blowfish) algorithm -->
   <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+  
+
 </beans>

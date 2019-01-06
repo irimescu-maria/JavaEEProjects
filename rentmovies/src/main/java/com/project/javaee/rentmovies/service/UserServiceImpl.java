@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.javaee.rentmovies.dto.UserDTO;
 import com.project.javaee.rentmovies.model.Role;
 import com.project.javaee.rentmovies.model.User;
 import com.project.javaee.rentmovies.repository.RoleRepository;
@@ -41,6 +42,25 @@ public class UserServiceImpl implements UserService{
 	public User saveUser(User user) {
 	userRepository.save(user);
 return user;
+	}
+
+	@Override
+	@Transactional
+	public User findUserByFirstname(String firstname) {
+		// TODO Auto-generated method stub
+		return userRepository.findByFirstname(firstname);
+	}
+
+	@Override
+	@Transactional
+	public User loginUser(String email, String password) {
+		UserDTO userDTO = null;
+		User user = this.findUserByEmail(email);
+	//	String encodePassword = passwordEncoder.encode(password);
+		if(user != null && user.getPassword().equals(password) && user.getEmail().equals(email)) {
+			return user;
+		}
+		return null;
 	}
 
 }

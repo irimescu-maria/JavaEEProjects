@@ -1,4 +1,5 @@
 <%
+
   if (session != null)
   {
 	  String userName = request.getParameter("firstname");

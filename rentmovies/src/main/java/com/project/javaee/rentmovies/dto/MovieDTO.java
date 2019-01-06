@@ -6,32 +6,35 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-
-
 public class MovieDTO {
 
 	private Long id;
 
-	
 	private String name;
 
-	
-	@DateTimeFormat(pattern = "dd-MM-yyyy")
-		private Date dateAdded;
+	private String imagePath;
 
-	
+	@DateTimeFormat(pattern = "dd-MM-yyyy")
+	private Date dateAdded;
+
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
 
 	private Date releaseDate;
 
-	
 	private int numberInStock;
-
 
 	private int numberAvailable;
 
 	@NotNull
 	private Long genreId;
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
 
 	public Long getId() {
 		return id;
@@ -88,6 +91,5 @@ public class MovieDTO {
 	public void setGenreId(Long genreId) {
 		this.genreId = genreId;
 	}
-	
-	
+
 }

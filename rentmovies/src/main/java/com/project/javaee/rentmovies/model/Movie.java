@@ -23,6 +23,9 @@ public class Movie {
 
 	@Column(name = "name")
 	private String name;
+	
+	@Column(name = "imagePath")
+	private String imagePath;
 
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
@@ -47,7 +50,17 @@ public class Movie {
 	public Movie() {
 		
 	}
-	
+		
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
+
+
 	public Long getId() {
 		return id;
 	}
