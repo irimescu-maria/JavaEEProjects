@@ -23,13 +23,16 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.project.javaee.rentmovies.dto.MovieDTO;
+import com.project.javaee.rentmovies.model.FileUpload;
 import com.project.javaee.rentmovies.model.Genre;
 import com.project.javaee.rentmovies.model.Movie;
+import com.project.javaee.rentmovies.repository.FileUploadRepository;
+import com.project.javaee.rentmovies.service.FileUploadService;
 import com.project.javaee.rentmovies.service.GenreService;
 import com.project.javaee.rentmovies.service.MovieService;
 
 @Controller
-/*@RequestMapping(value = "/admin")*/
+/* @RequestMapping(value = "/admin") */
 public class MovieController {
 
 	@Autowired
@@ -37,8 +40,11 @@ public class MovieController {
 
 	@Autowired
 	private GenreService genreService;
-	
-	//Save the upload file to this folder
+
+	@Autowired
+	private FileUploadService fileUploadService;
+
+	// Save the upload file to this folder
 	private static String UPLOADED_FOLDER = "C:\\Users\\Maria\\Pictures\\Camera Roll";
 	private String fileName;
 
@@ -52,7 +58,7 @@ public class MovieController {
 	@RequestMapping(value = "/movies/add", method = RequestMethod.GET)
 	public String getAddMovie(Model model) {
 
-		//List all the genres for dropdown list
+		// List all the genres for dropdown list
 		List<Genre> genres = genreService.findAllGenres();
 		model.addAttribute("genres", genres);
 
@@ -63,58 +69,64 @@ public class MovieController {
 	}
 
 	@RequestMapping(value = "/movies/add", method = RequestMethod.POST)
-	public String addMovie(@Valid @ModelAttribute("movie") MovieDTO movieDTO,
-			BindingResult result, Model model,
-			RedirectAttributes redirectAttributes,
-		final	@RequestParam(required = false) CommonsMultipartFile[]  file, HttpServletRequest request) {
+	public String addMovie(@Valid @ModelAttribute("movie") MovieDTO movieDTO, BindingResult result, Model model,
+			RedirectAttributes redirectAttributes, @RequestParam CommonsMultipartFile[] file,
+			HttpServletRequest request) {
 
-		fileName = request.getParameter("imagePath");
-		if(file != null) {
-			for(CommonsMultipartFile  aFile : file) {
-				if(aFile.isEmpty()) {
+		if (file != null && file.length > 0) {
+			for (CommonsMultipartFile aFile : file) {
+				if (aFile.isEmpty()) {
 					continue;
-				}else {
+				} else {
 					Movie movie = new Movie();
-					 
+					FileUpload fileUpload = new FileUpload();
+
+					fileUpload.setFileName(aFile.getOriginalFilename());
+					fileUpload.setData(aFile.getBytes());
+					fileUpload.setId((long) 1);
+					
 					movie.setName(movieDTO.getName());
-					movie.setImagePath(aFile.getOriginalFilename().toString());
 					movie.setDateAdded(movieDTO.getDateAdded());
 					movie.setReleaseDate(movieDTO.getReleaseDate());
 					movie.setNumberAvailable(movieDTO.getNumberAvailable());
 					movie.setNumberInStock(movieDTO.getNumberInStock());
 					movie.setGenre(new Genre(movieDTO.getGenreId()));
+					movie.setFileUpload(fileUpload);
+					
+					
+					fileUpload.setMovie(movie);
 					movieService.add(movie);
+					fileUploadService.add(fileUpload);
+
+					
+
+				
 					redirectAttributes.addFlashAttribute("message", "Successfully added..");
 					return "redirect:/movies";
 				}
 			}
 		}
-		/*if(file.isEmpty()) {
-			redirectAttributes.addFlashAttribute("message", "Please select a file to upload!");
-			return "redirect:/addMovie";
-		}*/
-				
-		if(result.hasErrors()) {
-			//List of all genres to model to populate the genre drop down
+		/*
+		 * if(file.isEmpty()) { redirectAttributes.addFlashAttribute("message",
+		 * "Please select a file to upload!"); return "redirect:/addMovie"; }
+		 */
+
+		if (result.hasErrors()) {
+			// List of all genres to model to populate the genre drop down
 			List<Genre> genres = genreService.findAllGenres();
 			model.addAttribute("genres", genres);
 			return "addMovie";
-		}else {
-			/*Path path = null;
-			//Get the file save it somewhere
-			try {
-				byte[] bytes = file.getBytes();
-				path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
-				Files.write(path, bytes);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/
+		} else {
+			/*
+			 * Path path = null; //Get the file save it somewhere try { byte[] bytes =
+			 * file.getBytes(); path = Paths.get(UPLOADED_FOLDER +
+			 * file.getOriginalFilename()); Files.write(path, bytes); } catch (IOException
+			 * e) { // TODO Auto-generated catch block e.printStackTrace(); }
+			 */
 			Movie movie = new Movie();
-			 
+
 			movie.setName(movieDTO.getName());
-			//movie.setImagePath(file.getName().toString());
+			// movie.setImagePath(file.getName().toString());
 			movie.setDateAdded(movieDTO.getDateAdded());
 			movie.setReleaseDate(movieDTO.getReleaseDate());
 			movie.setNumberAvailable(movieDTO.getNumberAvailable());
@@ -127,15 +139,14 @@ public class MovieController {
 
 	}
 
-
 	@RequestMapping(value = "/movie/edit", method = RequestMethod.GET)
-	public String getEditMovie(@RequestParam(value = "id", required = true) Long id, Model model, 
+	public String getEditMovie(@RequestParam(value = "id", required = true) Long id, Model model,
 			RedirectAttributes redirectAttributes) {
 
 		Movie movie = movieService.findMovie(id);
 
-		if(movie != null) {
-			//Create and put a MovieDTO to edit movie
+		if (movie != null) {
+			// Create and put a MovieDTO to edit movie
 			MovieDTO movieDTO = new MovieDTO();
 			movieDTO.setId(movie.getId());
 			movieDTO.setDateAdded(movie.getDateAdded());
@@ -147,27 +158,27 @@ public class MovieController {
 
 			model.addAttribute("movie", movieDTO);
 
-			//Add a list with all genres for movie
+			// Add a list with all genres for movie
 			List<Genre> genres = genreService.findAllGenres();
 			model.addAttribute("genres", genres);
 
 			return "editMovie";
-		}else {
+		} else {
 			redirectAttributes.addFlashAttribute("errorMessage", "Movie with specified id not found");
 			return "redirect:/movies";
 		}
 	}
-	
+
 	@RequestMapping(value = "/movie/edit", method = RequestMethod.POST)
-	public String editMovie(@Valid @ModelAttribute("movie") MovieDTO movieDTO, BindingResult result,
-			Model model, RedirectAttributes redirectAttributes) {
-		
-		if(result.hasErrors()) {
+	public String editMovie(@Valid @ModelAttribute("movie") MovieDTO movieDTO, BindingResult result, Model model,
+			RedirectAttributes redirectAttributes) {
+
+		if (result.hasErrors()) {
 			List<Genre> genres = genreService.findAllGenres();
 			model.addAttribute("genres", genres);
-			
+
 			return "editMovie";
-		}else {
+		} else {
 			Movie movie = new Movie();
 			movie.setId(movieDTO.getId());
 			movie.setDateAdded(movieDTO.getDateAdded());
@@ -178,19 +189,20 @@ public class MovieController {
 			movie.setReleaseDate(movieDTO.getReleaseDate());
 			movie.setGenre(new Genre(movieDTO.getGenreId()));
 			movieService.update(movie);
-			
+
 			return "redirect:/movies";
-		}		
+		}
 	}
-	
+
 	@RequestMapping(value = "/movie/delete", method = RequestMethod.GET)
-	public String deleteMovie(@Valid @ModelAttribute("id") Long id, BindingResult result, RedirectAttributes redirectAttributes) {
-	try {
-		movieService.delete(id);
-		redirectAttributes.addFlashAttribute("message", "Successfully deleted!");
-	} catch (Exception e) {
-		redirectAttributes.addFlashAttribute("errorMessage", "Delete error: " + e.getMessage());
-	}
+	public String deleteMovie(@Valid @ModelAttribute("id") Long id, BindingResult result,
+			RedirectAttributes redirectAttributes) {
+		try {
+			movieService.delete(id);
+			redirectAttributes.addFlashAttribute("message", "Successfully deleted!");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("errorMessage", "Delete error: " + e.getMessage());
+		}
 		return "redirect:/movies";
 	}
 }

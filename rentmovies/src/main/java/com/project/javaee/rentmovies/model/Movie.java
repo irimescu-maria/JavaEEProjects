@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,9 +25,6 @@ public class Movie {
 	@Column(name = "name")
 	private String name;
 	
-	@Column(name = "imagePath")
-	private String imagePath;
-
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	@Column(name = "dateAdded")
@@ -46,20 +44,14 @@ public class Movie {
 	@ManyToOne
 	@JoinColumn(name = "genreId", nullable = false)
 	private Genre genre;
+	
+	@OneToOne
+	@JoinColumn(name = "fileUploadId", nullable = false)
+	private FileUpload fileUpload;
 
 	public Movie() {
 		
 	}
-		
-	public String getImagePath() {
-		return imagePath;
-	}
-
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
-	}
-
-
 
 	public Long getId() {
 		return id;
@@ -117,6 +109,14 @@ public class Movie {
 		this.genre = genre;
 	}
 
+	public FileUpload getFileUpload() {
+		return fileUpload;
+	}
 
+	public void setFileUpload(FileUpload fileUpload) {
+		this.fileUpload = fileUpload;
+	}
+
+	
 
 }

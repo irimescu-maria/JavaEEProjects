@@ -8,9 +8,9 @@ import com.project.javaee.rentmovies.model.Movie;
 import antlr.collections.List;
 
 @Repository("movieRepository")
-public interface MovieRepository extends JpaRepository<Movie, Long>{
+public interface MovieRepository extends JpaRepository<Movie, Long> {
 
-	 Movie findByName(String name);
+	Movie findByName(String name);
 
 	Movie findById(Long movieId);
 
