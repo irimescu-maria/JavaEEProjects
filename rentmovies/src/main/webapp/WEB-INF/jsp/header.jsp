@@ -43,7 +43,7 @@
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="#">Rent a Movie</a>
+				<a class="navbar-brand" href="<c:url value="/movies" />">Rent a Movie</a>
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">

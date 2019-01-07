@@ -33,7 +33,7 @@ ${message}
 				<td>${movie.releaseDate}</td>
 				<td>${movie.numberInStock}</td>
 				<td>${movie.numberAvailable}</td>
-				<td><img src="${pageContext.request.contextPath}/movie/${movie.imagePath}" alt = "${movie.imagePath}" width="100px" height="70px"/></td>
+				<td><img src="${pageContext.request.contextPath}/image/${movie.imagePath}" alt = "${movie.imagePath}" width="100px" height="70px"/></td>
 				<td>${movie.genre.name}</td>
 				<td><a href="<c:url value='movie/edit?id=${movie.id}'/>" class="btn btn-primary">Edit</a> |
 					<a href="<c:url value='movie/delete?id=${movie.id}'/>" class="btn btn-danger">Delete</a></td>

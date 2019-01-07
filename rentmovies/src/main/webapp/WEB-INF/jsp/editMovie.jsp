@@ -4,7 +4,7 @@
 <br />
 <br />
 <h1>Edit Movie</h1>
-<form:form method="post" modelAttribute="movie" class="form-horizontal">
+<form:form method="post" modelAttribute="movie" class="form-horizontal" enctype="multipart/form-data">
 	<div role="form">
 		<div class="row">
 			<label class="control-label col-md-3" for="name">Name</label>
@@ -79,7 +79,15 @@
 				<form:errors path="numberInStock" cssStyle="help-inline" />
 			</div>
 		</div>
-		
+		<div class="row">
+			<label class="control-label col-md-3" for="imagePath">Image
+				path</label>
+			<div class="col-md-7">
+		<%-- 		<form:input type="file" name="file" path="file" class="form-control input-sm" /> --%>
+			  <input type="file" name="file" /><br/>
+				<form:errors path="imagePath" cssStyle="help-inline" />
+			</div>
+		</div>
 		<div class="row">
 			<label class="control-label col-md-3" for="genre">Genre</label>
 			<div class="col-md-7">

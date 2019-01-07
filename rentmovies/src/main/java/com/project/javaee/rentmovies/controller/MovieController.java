@@ -1,9 +1,13 @@
 package com.project.javaee.rentmovies.controller;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,11 +68,16 @@ public class MovieController {
 
 	@RequestMapping(value = "/movies/add", method = RequestMethod.POST)
 	public String addMovie(@Valid @ModelAttribute("movie") MovieDTO movieDTO, BindingResult result, Model model,
-			RedirectAttributes redirectAttributes,final @RequestParam("file") MultipartFile file,
+			RedirectAttributes redirectAttributes,
+			@RequestParam("file") MultipartFile file,
 			HttpServletRequest request) {
-
-	
-
+		
+		String nameImage = uploadFile(file);
+		
+		if(nameImage != null) {
+			movieDTO.setImagePath(nameImage);
+		}
+		
 		if (result.hasErrors()) {
 			// List of all genres to model to populate the genre drop down
 			List<Genre> genres = genreService.findAllGenres();
@@ -76,19 +85,10 @@ public class MovieController {
 			return "addMovie";
 		} else {
 			
-			  Path path = null; //Get the file save it somewhere 
-			  try {
-				  byte[] bytes = file.getBytes(); 
-			  path = Paths.get(UPLOADED_FOLDER +  file.getOriginalFilename()); 
-			  Files.write(path, bytes);
-			  } catch (IOException e) { // TODO Auto-generated catch block 
-				  e.printStackTrace(); }
-			  }
-			 fileName = request.getParameter("imagePath");
 			Movie movie = new Movie();
 
 			movie.setName(movieDTO.getName());
-			 movie.setImagePath(file.getOriginalFilename().toString());
+			 movie.setImagePath(movieDTO.getImagePath());
 			movie.setDateAdded(movieDTO.getDateAdded());
 			movie.setReleaseDate(movieDTO.getReleaseDate());
 			movie.setNumberAvailable(movieDTO.getNumberAvailable());
@@ -99,23 +99,29 @@ public class MovieController {
 			return "redirect:/movies";
 		}
 
-	
+	}
 
 	@RequestMapping(value = "/movie/edit", method = RequestMethod.GET)
 	public String getEditMovie(@RequestParam(value = "id", required = true) Long id, Model model,
-			RedirectAttributes redirectAttributes) {
+			RedirectAttributes redirectAttributes/*,
+			@RequestParam("file") MultipartFile file*/) {
 
 		Movie movie = movieService.findMovie(id);
-
-		if (movie != null) {
+	//	String nameImage = uploadFile(file);
+		
+		if (movie != null/* && nameImage != null*/) {
+			
+			
 			// Create and put a MovieDTO to edit movie
 			MovieDTO movieDTO = new MovieDTO();
+			
 			movieDTO.setId(movie.getId());
 			movieDTO.setDateAdded(movie.getDateAdded());
 			movieDTO.setName(movie.getName());
 			movieDTO.setNumberAvailable(movie.getNumberAvailable());
 			movieDTO.setNumberInStock(movie.getNumberInStock());
 			movieDTO.setReleaseDate(movie.getReleaseDate());
+			movieDTO.setImagePath(movie.getImagePath());
 			movieDTO.setGenreId(movie.getGenre().getId());
 
 			model.addAttribute("movie", movieDTO);
@@ -133,8 +139,15 @@ public class MovieController {
 
 	@RequestMapping(value = "/movie/edit", method = RequestMethod.POST)
 	public String editMovie(@Valid @ModelAttribute("movie") MovieDTO movieDTO, BindingResult result, Model model,
-			RedirectAttributes redirectAttributes) {
+			RedirectAttributes redirectAttributes,
+			@RequestParam("file") MultipartFile file) {
 
+		String nameImage = uploadFile(file);
+		
+		if(nameImage != null) {
+			movieDTO.setImagePath(nameImage);
+		}
+		
 		if (result.hasErrors()) {
 			List<Genre> genres = genreService.findAllGenres();
 			model.addAttribute("genres", genres);
@@ -149,6 +162,7 @@ public class MovieController {
 			movie.setNumberInStock(movieDTO.getNumberInStock());
 			movie.setDateAdded(movieDTO.getDateAdded());
 			movie.setReleaseDate(movieDTO.getReleaseDate());
+			movie.setImagePath(movieDTO.getImagePath());
 			movie.setGenre(new Genre(movieDTO.getGenreId()));
 			movieService.update(movie);
 
@@ -166,5 +180,30 @@ public class MovieController {
 			redirectAttributes.addFlashAttribute("errorMessage", "Delete error: " + e.getMessage());
 		}
 		return "redirect:/movies";
+	}
+	
+	private String uploadFile(MultipartFile file) {
+		if(!file.isEmpty()) {
+			try {
+				byte[] bytes = file.getBytes();
+				
+				//Creating the directory to store file
+				String rootPath = System.getProperty("catalina.home");
+				File dir = new File(rootPath + File.separator + "images");
+				if(!dir.exists())
+					dir.mkdirs();
+				
+				//Creating the file on server
+				String name = String.valueOf(new Date().getTime()) + ".jpg";
+				File serverFile = new File(dir.getAbsolutePath() + File.separator + name);
+				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
+				stream.write(bytes);
+				stream.close();
+				return name;
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+		return null;
 	}
 }
