@@ -45,10 +45,8 @@ public class Movie {
 	@JoinColumn(name = "genreId", nullable = false)
 	private Genre genre;
 	
-	@OneToOne
-	@JoinColumn(name = "fileUploadId", nullable = false)
-	private FileUpload fileUpload;
-
+	@Column(name = "imagePath")
+	private String imagePath;
 	public Movie() {
 		
 	}
@@ -109,14 +107,13 @@ public class Movie {
 		this.genre = genre;
 	}
 
-	public FileUpload getFileUpload() {
-		return fileUpload;
+	public String getImagePath() {
+		return imagePath;
 	}
 
-	public void setFileUpload(FileUpload fileUpload) {
-		this.fileUpload = fileUpload;
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
-
 	
-
+	
 }
