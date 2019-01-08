@@ -37,29 +37,20 @@ import com.project.javaee.rentmovies.service.MovieService;
 import com.project.javaee.rentmovies.service.UserService;
 
 @Controller
-/* @RequestMapping(value = "/admin") */
 public class MovieController {
 
 	@Autowired
 	private MovieService movieService;
-	
-	@Autowired
-	private UserService userService;
 
 	@Autowired
 	private GenreService genreService;
 
-	// Save the upload file to this folder
-	private static String UPLOADED_FOLDER = "C:\\Users\\Maria\\Pictures\\Camera Roll";
-	private String fileName;
-
 	@RequestMapping(value = "/movies", method = RequestMethod.GET)
 	public String getMovies(Model model) {
-		
-	
+
 		List<Movie> movies = movieService.findAllMovies();
 		model.addAttribute("movies", movies);
-		
+
 		return "movies";
 	}
 
@@ -67,45 +58,43 @@ public class MovieController {
 	public String getAddMovie(Model model, HttpSession session) {
 
 		User user = (User) session.getAttribute("user");
-		if( user == null) {
+		if (user == null) {
 			return "redirect:/login";
 		}
-		
-		
+
 		// List all the genres for dropdown list
 		List<Genre> genres = genreService.findAllGenres();
 		model.addAttribute("genres", genres);
 
 		MovieDTO movie = new MovieDTO();
 		model.addAttribute("movie", movie);
-		
+
 		return "addMovie";
-	
+
 	}
 
 	@RequestMapping(value = "/movies/add", method = RequestMethod.POST)
 	public String addMovie(@Valid @ModelAttribute("movie") MovieDTO movieDTO, BindingResult result, Model model,
-			RedirectAttributes redirectAttributes,
-			@RequestParam("file") MultipartFile file,
+			RedirectAttributes redirectAttributes, @RequestParam("file") MultipartFile file,
 			HttpServletRequest request) {
-		
+
 		String nameImage = uploadFile(file);
-		
-		if(nameImage != null) {
+
+		if (nameImage != null) {
 			movieDTO.setImagePath(nameImage);
 		}
-		
+
 		if (result.hasErrors()) {
 			// List of all genres to model to populate the genre drop down
 			List<Genre> genres = genreService.findAllGenres();
 			model.addAttribute("genres", genres);
 			return "addMovie";
 		} else {
-			
+
 			Movie movie = new Movie();
 
 			movie.setName(movieDTO.getName());
-			 movie.setImagePath(movieDTO.getImagePath());
+			movie.setImagePath(movieDTO.getImagePath());
 			movie.setDateAdded(movieDTO.getDateAdded());
 			movie.setReleaseDate(movieDTO.getReleaseDate());
 			movie.setNumberAvailable(movieDTO.getNumberAvailable());
@@ -122,13 +111,12 @@ public class MovieController {
 			RedirectAttributes redirectAttributes) {
 
 		Movie movie = movieService.findMovie(id);
-	
-		if (movie != null/* && nameImage != null*/) {
-			
-			
+
+		if (movie != null/* && nameImage != null */) {
+
 			// Create and put a MovieDTO to edit movie
 			MovieDTO movieDTO = new MovieDTO();
-			
+
 			movieDTO.setId(movie.getId());
 			movieDTO.setDateAdded(movie.getDateAdded());
 			movieDTO.setName(movie.getName());
@@ -153,15 +141,14 @@ public class MovieController {
 
 	@RequestMapping(value = "/movie/edit", method = RequestMethod.POST)
 	public String editMovie(@Valid @ModelAttribute("movie") MovieDTO movieDTO, BindingResult result, Model model,
-			RedirectAttributes redirectAttributes,
-			@RequestParam("file") MultipartFile file) {
+			RedirectAttributes redirectAttributes, @RequestParam("file") MultipartFile file) {
 
 		String nameImage = uploadFile(file);
-		
-		if(nameImage != null) {
+
+		if (nameImage != null) {
 			movieDTO.setImagePath(nameImage);
 		}
-		
+
 		if (result.hasErrors()) {
 			List<Genre> genres = genreService.findAllGenres();
 			model.addAttribute("genres", genres);
@@ -195,19 +182,19 @@ public class MovieController {
 		}
 		return "redirect:/movies";
 	}
-	
+
 	private String uploadFile(MultipartFile file) {
-		if(!file.isEmpty()) {
+		if (!file.isEmpty()) {
 			try {
 				byte[] bytes = file.getBytes();
-				
-				//Creating the directory to store file
+
+				// Creating the directory to store file
 				String rootPath = System.getProperty("catalina.home");
 				File dir = new File(rootPath + File.separator + "images");
-				if(!dir.exists())
+				if (!dir.exists())
 					dir.mkdirs();
-				
-				//Creating the file on server
+
+				// Creating the file on server
 				String name = String.valueOf(new Date().getTime()) + ".jpg";
 				File serverFile = new File(dir.getAbsolutePath() + File.separator + name);
 				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));

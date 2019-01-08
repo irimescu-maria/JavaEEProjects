@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.project.javaee.rentmovies.dto.MovieDTO;
+import com.project.javaee.rentmovies.dto.RentalDTO;
 import com.project.javaee.rentmovies.dto.UserDTO;
 import com.project.javaee.rentmovies.model.Movie;
 import com.project.javaee.rentmovies.model.Rental;
@@ -35,11 +38,10 @@ public class UserController {
 	UserService userService;
 
 	@Autowired
-	RoleService roleService;
+	private RoleService roleService;
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login(Model model) {
@@ -51,33 +53,26 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String login(@Valid @ModelAttribute("user") User user,	@RequestParam("email") String email,
+	public String login(@Valid @ModelAttribute("user") User user, @RequestParam("email") String email,
 			@RequestParam("password") String password, HttpSession session, Model model) {
 
 		// Read parameters from request.
-		/*String email = request.getParameter("email");
-		String password = request.getParameter("password");
-*/
-		// user = userService.loginUser(email, passwordEncoder.encode(password));
+		/*
+		 * String email = request.getParameter("email"); String password =
+		 * request.getParameter("password");
+		 */
+		// user = userService.loginUser(email, password);
 		user = userService.loginUser(email, password);
-		System.err.println("======================================= user: " + user);
-		if (user == null) {
-			model.addAttribute("Error logging in.  Please try again.");
-			//model.addAttribute("user", user);
-			return "login";
-		}
-	
-		Role role = roleService.findRoleById(user.getRole().getId());
-		System.err.println("user: " + user.getEmail() + user.getRole());
-		if (user.getRole().getId() == role.getId()) {
+		System.err.println("======================================= user: " + user.getRole().getName());
+
+		if ("ADMIN".equals(user.getRole().getName())) {
 			session.setAttribute("user", user);
 			return "redirect:/movies";
 		} else {
 			session.setAttribute("user", user);
-			//model.addAttribute("user", user);
+			// model.addAttribute("user", user);
 			return "redirect:/home";
 		}
-
 	}
 
 	@RequestMapping(value = "logout", method = RequestMethod.GET)
@@ -85,10 +80,10 @@ public class UserController {
 		session.removeAttribute("email");
 		return "redirect:/login";
 	}
-	
+
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public String signup(Model model) {
-	
+
 		List<Role> roles = roleService.findAllRoles();
 		model.addAttribute("roles", roles);
 
@@ -100,30 +95,27 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public String createUser(@Valid @ModelAttribute("user") UserDTO userDTO,
-			BindingResult bindingResult, Model model) {
+	public String createUser(@Valid @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult, Model model) {
 		User userExists = userService.findUserByEmail(userDTO.getEmail());
 
 		if (userExists != null) {
 			bindingResult.rejectValue("email", "error.user", "This email already exists!");
 		}
 
-		
 		if (bindingResult.hasErrors()) {
 			List<Role> roles = roleService.findAllRoles();
 			model.addAttribute("roles", roles);
-			
+
 			return "signup";
 		} else {
-			
-		
+
 			User user = new User();
 
 			user.setFirstname(userDTO.getFirstname());
 			user.setLastname(userDTO.getLastname());
 			user.setEmail(userDTO.getEmail());
-			// user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-			user.setPassword(userDTO.getPassword());
+			user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+			// user.setPassword(userDTO.getPassword());
 			user.setRole(new Role(userDTO.getRoleId()));
 			userService.saveUser(user);
 
@@ -134,21 +126,34 @@ public class UserController {
 				return "redirect:/home";
 			}
 		}
-
 	}
 
-
 	@RequestMapping(value = "/rent", method = RequestMethod.GET)
-	public String rentMovie(Model model) {
+	public String rentMovie(Model model,
+			HttpSession session) {
 
-		Rental rent = new Rental();
-		model.addAttribute("rent", rent);
+		/*
+			User user = (User) session.getAttribute("user");
+			
+			RentalDTO rentalDTO = new RentalDTO();
+			session.setAttribute("user", user);
+		//	rentalDTO.setMovie();
+			rentalDTO.setUser(user);
+			rentalDTO.getDateRented();
+			rentalDTO.getDateReturned();
+			
+			model.addAttribute("rent", rentalDTO);
+			model.addAttribute("user", user);*/
+		/*Rental rent = new Rental();
+		model.addAttribute("rent", rent);*/
 		return "rent";
 	}
 
 	@RequestMapping(value = "/rent", method = RequestMethod.POST)
-	public String rentForm(@Valid @ModelAttribute("rental") Rental rental, BindingResult result, Model model) {
-		List<Movie> movies = movieService.findAllMovies();
+	public String rentForm(@Valid @ModelAttribute("rental") Rental rental, BindingResult result,
+			MovieDTO movieDTO, Model model) {
+		
+		/*List<Movie> movies = movieService.findAllMovies();
 		User user = new User();
 		Movie movie = new Movie();
 		for (Movie item : movies) {
@@ -157,12 +162,23 @@ public class UserController {
 				result.reject("Movie is not available");
 			}
 			count--;
-
+			movie = movieService.findMovie(id);
+			if(movie != null) {
+				movie.setNumberAvailable(count);
+			}
+			
+			
 			Rental rent = new Rental();
 			rent.setUser(user);
 			rent.setMovie(movie);
 			rent.setDateRented(new Date());
+			rent.setDateReturned(new Date());
+			
+			model.addAttribute("rent", rent);
+			return "home";
 		}
+		*/
 		return null;
+		
 	}
 }

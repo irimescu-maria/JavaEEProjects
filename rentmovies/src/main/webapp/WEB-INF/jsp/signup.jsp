@@ -51,7 +51,7 @@
 			<form:select path="roleId" required="true"
 				class="form-control input-sm">
 				<form:option value="">Select</form:option>
-				<form:options items="${roles}" itemLabel="role" itemValue="id" />
+				<form:options items="${roles}" itemLabel="name" itemValue="id" />
 			</form:select>
 			<%-- <form:errors path="genreId" cssStyle="help-inline" /> --%>
 		</div>

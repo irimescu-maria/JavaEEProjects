@@ -54,10 +54,11 @@ return user;
 	@Override
 	@Transactional
 	public User loginUser(String email, String password) {
-		UserDTO userDTO = null;
+		
 		User user = this.findUserByEmail(email);
+
 	//	String encodePassword = passwordEncoder.encode(password);
-		if(user != null && user.getPassword().equals(password) && user.getEmail().equals(email)) {
+		if(user != null && passwordEncoder.matches(password, user.getPassword().toString()) && user.getEmail().equals(email)) {
 			return user;
 		}
 		return null;
