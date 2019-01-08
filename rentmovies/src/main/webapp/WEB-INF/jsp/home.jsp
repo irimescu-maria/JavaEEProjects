@@ -19,7 +19,8 @@
 		<div class="shadow">
 			<div class="column">
 				<h1>${movie.name}</h1>
-				<p ${movie.numberInStock}></p>
+				<p>${movie.numberInStock}</p>
+				<p>${movie.imagePath}</p>
 				<p>${movie.genre.name}</p>
 				<a href="<c:url value='rent'/>" class="btn btn-info">Rent Movie</a>
 			</div>

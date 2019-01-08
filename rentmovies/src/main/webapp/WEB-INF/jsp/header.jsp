@@ -55,7 +55,7 @@
 							<li><a href="<c:url value="/login" />">Login</a></li>
 						</c:when>
 						<c:otherwise>
-							<li>Hello ${user.email}</li>
+							<li><a href="#">Hello ${user.email}</a></li>
 							<li><a href="<c:url value="/logout" />">Log out</a></li>
 				
 						</c:otherwise>

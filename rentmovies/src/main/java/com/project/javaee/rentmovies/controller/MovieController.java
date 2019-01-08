@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.mysql.cj.api.Session;
 import com.project.javaee.rentmovies.dto.MovieDTO;
 import com.project.javaee.rentmovies.model.Genre;
 import com.project.javaee.rentmovies.model.Movie;
+import com.project.javaee.rentmovies.model.User;
 import com.project.javaee.rentmovies.service.GenreService;
 import com.project.javaee.rentmovies.service.MovieService;
+import com.project.javaee.rentmovies.service.UserService;
 
 @Controller
 /* @RequestMapping(value = "/admin") */
@@ -38,6 +42,9 @@ public class MovieController {
 
 	@Autowired
 	private MovieService movieService;
+	
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private GenreService genreService;
@@ -48,22 +55,32 @@ public class MovieController {
 
 	@RequestMapping(value = "/movies", method = RequestMethod.GET)
 	public String getMovies(Model model) {
+		
+	
 		List<Movie> movies = movieService.findAllMovies();
 		model.addAttribute("movies", movies);
+		
 		return "movies";
 	}
 
 	@RequestMapping(value = "/movies/add", method = RequestMethod.GET)
-	public String getAddMovie(Model model) {
+	public String getAddMovie(Model model, HttpSession session) {
 
+		User user = (User) session.getAttribute("user");
+		if( user == null) {
+			return "redirect:/login";
+		}
+		
+		
 		// List all the genres for dropdown list
 		List<Genre> genres = genreService.findAllGenres();
 		model.addAttribute("genres", genres);
 
 		MovieDTO movie = new MovieDTO();
 		model.addAttribute("movie", movie);
-
+		
 		return "addMovie";
+	
 	}
 
 	@RequestMapping(value = "/movies/add", method = RequestMethod.POST)
@@ -98,17 +115,14 @@ public class MovieController {
 			redirectAttributes.addFlashAttribute("message", "Successfully added..");
 			return "redirect:/movies";
 		}
-
 	}
 
 	@RequestMapping(value = "/movie/edit", method = RequestMethod.GET)
 	public String getEditMovie(@RequestParam(value = "id", required = true) Long id, Model model,
-			RedirectAttributes redirectAttributes/*,
-			@RequestParam("file") MultipartFile file*/) {
+			RedirectAttributes redirectAttributes) {
 
 		Movie movie = movieService.findMovie(id);
-	//	String nameImage = uploadFile(file);
-		
+	
 		if (movie != null/* && nameImage != null*/) {
 			
 			

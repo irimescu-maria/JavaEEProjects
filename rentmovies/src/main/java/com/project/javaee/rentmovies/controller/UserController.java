@@ -60,6 +60,7 @@ public class UserController {
 */
 		// user = userService.loginUser(email, passwordEncoder.encode(password));
 		user = userService.loginUser(email, password);
+		System.err.println("======================================= user: " + user);
 		if (user == null) {
 			model.addAttribute("Error logging in.  Please try again.");
 			//model.addAttribute("user", user);
@@ -67,12 +68,13 @@ public class UserController {
 		}
 	
 		Role role = roleService.findRoleById(user.getRole().getId());
-		if (user.getEmail().contains("admin")) {
+		System.err.println("user: " + user.getEmail() + user.getRole());
+		if (user.getRole().getId() == role.getId()) {
 			session.setAttribute("user", user);
 			return "redirect:/movies";
 		} else {
 			session.setAttribute("user", user);
-		//	model.addAttribute("user", user);
+			//model.addAttribute("user", user);
 			return "redirect:/home";
 		}
 
@@ -126,6 +128,7 @@ public class UserController {
 			userService.saveUser(user);
 
 			if (user.getEmail().contains("admin")) {
+
 				return "redirect:/movies";
 			} else {
 				return "redirect:/home";
@@ -134,21 +137,6 @@ public class UserController {
 
 	}
 
-	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	public String home(Model model, @ModelAttribute("user") User user) {
-
-		/*
-		 * Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		 * User user = userService.findUserByEmail(auth.getName());
-		 * model.addAttribute("user", "Welcome " + user.getFirstname() + " " +
-		 * user.getLastname() + " (" + user.getEmail() + ")");
-		 */
-		List<Movie> movies = movieService.findAllMovies();
-		model.addAttribute("movies", movies);
-		model.addAttribute("user", user);
-		return "home";
-
-	}
 
 	@RequestMapping(value = "/rent", method = RequestMethod.GET)
 	public String rentMovie(Model model) {

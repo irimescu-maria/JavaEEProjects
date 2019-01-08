@@ -8,6 +8,7 @@
 <c:if test="${not empty messge}">
 	<div class="alert alert-success">${message}</div>
 </c:if>
+
 <div><a href= "<c:url value='movies/add'/>" class="btn btn-info">Add new movie</a></div>
 ${message}
 <table class="table">

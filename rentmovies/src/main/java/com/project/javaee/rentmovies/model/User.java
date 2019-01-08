@@ -1,6 +1,5 @@
 package com.project.javaee.rentmovies.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,8 +10,7 @@ import javax.persistence.ManyToOne;
 
 @Entity(name = "User")
 public class User {
-	
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id")
