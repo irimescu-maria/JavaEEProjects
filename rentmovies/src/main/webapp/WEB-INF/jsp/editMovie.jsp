@@ -1,110 +1,110 @@
 <%@ include file="header.jsp"%>
 <br />
 <br />
-<br />
-<br />
+
+<span class="glyphicon glyphicon-home"></span><a  href="<c:url value='/movies'/>"> Back to List of Movies</a>
 <h1>Edit Movie</h1>
 <form:form method="post" modelAttribute="movie" class="form-horizontal" enctype="multipart/form-data">
-	<div role="form">
-		<div class="row">
-			<label class="control-label col-md-3" for="name">Name</label>
-			<div class="col-md-7">
-				<form:input type="text" path="name" class="form-control input-sm" />
-				<form:errors path="name" cssStyle="help-inline" />
-			</div>
-		</div>
-		<div class="row">
-			<label class="control-label col-md-3" for="dateAdded">Date
-				Added</label>
-			<div class="col-md-7">
-				<div class="input-group date" id="dateAddedPicker">
-					<form:input type="text" path="dateAdded" id="dateAdded"
-						class="form-control input-sm" />
-					<span class="input-group-addon"><i
-						class="glyphicon glyphicon-th"></i></span>
-				</div>
-				<form:errors path="dateAdded" cssStyle="help-inline" />
-
-			</div>
-			<script type="text/javascript">
-			
-				
-				$('#dateAddedPicker').datepicker({
+		<script type="text/javascript">
+			$(function() {
+				$("#dateAddedPicker").datepicker({
 					format : 'dd-mm-yyyy',
 					autoclose : true,
 					todayHighlight : true
 				});
-			</script>
-		</div>
 
-		<div class="row">
-			<label class="control-label col-md-3" for="releaseDate">Release
-				Date</label>
-			<div class="col-md-7">
-				<div class="input-group date" id="releaseDatePicker">
-					<form:input type="text" path="releaseDate" id="releaseDate"
-						class="form-control input-sm" />
-					<span class="input-group-addon"><i
-						class="glyphicon glyphicon-th"></i></span>
-				</div>
-				<form:errors path="dateAdded" cssStyle="help-inline" />
-
-			</div>
-			<script type="text/javascript">
 				$('#releaseDatePicker').datepicker({
 					format : 'dd-mm-yyyy',
 					autoclose : true,
 					todayHighlight : true
 				});
-			</script>
+			});
+		</script>
+
+		<div class="form-group">
+			<div class="row">
+				<form:input type="text" path="name" class="form-control"
+					required="required" />
+				<form:errors path="name" cssStyle="help-inline" />
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="row">
+				<div class="input-group date" id="dateAddedPicker">
+					<form:input type="text" path="dateAdded" class="form-control"
+						placeholder="Date" required="required" />
+					<span class="input-group-addon"><i
+						class="glyphicon glyphicon-th"></i></span>
+				</div>
+				<form:errors path="dateAdded" cssStyle="help-inline" />
+			</div>
 		</div>
 
-		<div class="row">
-			<label class="control-label col-md-3" for="numberAvailable">Number
-				Available</label>
-			<div class="col-md-7">
+		<div class="form-group">
+			<div class="row">
+				<label class="control-label col-md-3" for="imagePath">Image
+					path</label>
+				<div class="col-md-7">
+					<%-- 		<form:input type="file" name="file" path="file" class="form-control input-sm" /> --%>
+					<input type="file" name="file" /><br />
+					<form:errors path="imagePath" cssStyle="help-inline" />
+				</div>
+			</div>
+		</div>
 
-				<form:input type="text" path="numberAvailable"
-					class="form-control input-sm" />
+		<div class="form-group">
+			<div class="row">
+
+				<div class="col-md-7">
+					<div class="input-group date" id="releaseDatePicker">
+						<form:input type="text" path="releaseDate" id="releaseDate"
+							class="form-control" placeholder="Release Date"
+							required="required" />
+						<span class="input-group-addon"><i
+							class="glyphicon glyphicon-th"></i></span>
+					</div>
+					<form:errors path="dateAdded" cssStyle="help-inline" />
+
+				</div>
+
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="row">
+
+				<form:input type="text" path="numberAvailable" class="form-control"
+					placeholder="Number Available" required="required" />
 				<form:errors path="numberAvailable" cssStyle="help-inline" />
-			</div>
-		</div>
-		
-		<div class="row">
-			<label class="control-label col-md-3" for="numberInStock">Number in Stock</label>
-			<div class="col-md-7">
 
-				<form:input type="text" path="numberInStock"
-					class="form-control input-sm" />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="row">
+
+				<form:input type="text" path="numberInStock" class="form-control"
+					placeholder="Number in Stock" required="required" />
 				<form:errors path="numberInStock" cssStyle="help-inline" />
+
 			</div>
 		</div>
-		<div class="row">
-			<label class="control-label col-md-3" for="imagePath">Image
-				path</label>
-			<div class="col-md-7">
-		<%-- 		<form:input type="file" name="file" path="file" class="form-control input-sm" /> --%>
-			  <input type="file" name="file" /><br/>
-				<form:errors path="imagePath" cssStyle="help-inline" />
-			</div>
-		</div>
-		<div class="row">
-			<label class="control-label col-md-3" for="genre">Genre</label>
-			<div class="col-md-7">
-				<form:select path="genreId" required="true" class="form-control input-sm">
-					<form:option value="">Select</form:option>
+
+		<div class="form-group">
+			<div class="row">
+				<form:select path="genreId" required="true" class="form-control">
+					<form:option value="">Select Genre</form:option>
 					<form:options items="${genres}" itemLabel="name" itemValue="id" />
 				</form:select>
-					<form:errors path="genreId" cssStyle="help-inline" />
+				<%-- <form:errors path="genreId" cssStyle="help-inline" /> --%>
 			</div>
 		</div>
-		
-		<div class="row">
-			<div class="form-actions">
-				<input class="btn btn-default pull-center" type="submit" value="Update">
+		<div class="form-group">
+			<div class="row">
+				<input class="btn btn-success btn-lg btn-block" type="submit"
+					value="Edit">
 			</div>
 		</div>
-	</div>
 </form:form>
 
 <%@ include file="footer.jsp"%>

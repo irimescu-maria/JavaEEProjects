@@ -9,52 +9,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rent a Movie</title>
 
-<%-- <script
-	src="<c:url value='https://maxcdn.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js' />"></script> --%>
-<script src="<c:url value='https://code.jquery.com/jquery-1.11.1.min.js' />"></script>
-<script src="<c:url value='/resources/jquery/js/jquery.min.js'/>"></script>
-<script src="<c:url value='/resources/bootstrap/js/bootstrap.min.js'/>"></script>
-<script src="<c:url value='/resources/bootstrap/js/bootstrap-datepicker.js'/>"></script>
-<script src="<c:url value='/resources/jquery/js/jquery.min.js'/>"></script>
-<script src="<c:url value='/resources/bootstrap/js/bootstrap.min.js'/>"></script>
-<script src="<c:url value='/resources/bootstrap/js/bootstrap-datepicker.js'/>"></script>
+<style><%@include file="/WEB-INF/resources/style.css"%></style>
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/3.0.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="<c:url value='/resources/bootstrap/css/bootstrap.min.css'/>">
-<link rel="stylesheet" href="<c:url value='/resources/bootstrap/css/bootstrap-datepicker3.standalone.css'/>">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<link  src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+  
+
+<!-- <link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ -->
 
 </head>
 <body>
-	<div class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container">
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="<c:url value="/movies" />">Rent a Movie</a>
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#toggle-navbar"
+					aria-expanded="false" aria-controls="navbar">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="<c:url value="/movies" />">Rent a
+					Movie</a>
 			</div>
-			<div class="navbar-collapse collapse">
-				<ul class="nav navbar-nav">
-				</ul>
+			<div id="toggle-navbar" class="collapse navbar-collapse">
+
 				<ul class="nav navbar-nav navbar-right">
 					<c:choose>
 						<c:when test="${empty user.email}">
-							<li><a href="<c:url value = "/signup"/>">Register</a></li>
-							<li><a href="<c:url value="/login" />">Login</a></li>
+							<li><a href="<c:url value = "/signup"/>"><span
+									class="glyphicon glyphicon-user"></span> Register</a></li>
+							<li><a href="<c:url value="/login" />"><span
+									class="glyphicon glyphicon-log-in"></span> Login</a></li>
 						</c:when>
 						<c:otherwise>
 							<li><a href="#">Hello ${user.email}</a></li>
-							<li><a href="<c:url value="/logout" />">Log out</a></li>
-				
+							<li><a href="<c:url value="/logout" />"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+
 						</c:otherwise>
 					</c:choose>
-
 				</ul>
 			</div>
-
-
-
 		</div>
-	</div>
+	</nav>
+
 	<div class="container">

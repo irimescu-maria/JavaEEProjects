@@ -3,75 +3,67 @@
 <br />
 <br />
 
-<form:form method="post" modelAttribute="user">
-	<div class="row">
-		<div class="col-md-3"></div>
-		<div class="col-md-6">
-			<div class="alert alert-success" role="alert"></div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-3"></div>
-		<div class="col-md-6">
-			<h2>Register User</h2>
-			<hr>
-		</div>
-	</div>
-	<div class="row">
-		<label class="control-label col-md-3" for="firstname">First
-			name</label>
-		<div class="col-md-7">
-			<form:input type="text" path="firstname"
-				class="form-control input-sm" />
-			<form:errors path="firstname" cssStyle="help-inline" />
-		</div>
-	</div>
-
-	<div class="row">
-		<label class="control-label col-md-3" for="lastname">Last name</label>
-		<div class="col-md-7">
-			<form:input type="text" path="lastname" class="form-control input-sm" />
-			<form:errors path="lastname" cssStyle="help-inline" />
-		</div>
-
-	</div>
-
-	<div class="row">
-		<label class="control-label col-md-3" for="email">Email</label>
-		<div class="col-md-7">
-			<form:input type="text" path="email" class="form-control input-sm" />
-			<form:errors path="email" cssStyle="help-inline" />
-		</div>
-	</div>
-	
-	<div class="row">
-		<label class="control-label col-md-3" for="role">Role</label>
-		<div class="col-md-7">
-			<form:select path="roleId" required="true"
-				class="form-control input-sm">
-				<form:option value="">Select</form:option>
-				<form:options items="${roles}" itemLabel="name" itemValue="id" />
-			</form:select>
-			<%-- <form:errors path="genreId" cssStyle="help-inline" /> --%>
-		</div>
-	</div>
-	<div class="row">
-		<label class="control-label col-md-3" for="password">Password</label>
-		<div class="col-md-7">
-			<form:input type="password" path="password" class="form-control input-sm" />
-			<form:errors path="email" cssStyle="help-inline" />
-		</div>
-		
-	</div>
-
-	<div class="row">
-		<div class="col-md-3"></div>
-		<div class="col-md-6">
-			<div class="form-actions">
-				<input class="btn btn-default pull-center" type="submit" value="Add">
+<div class="signup-form">
+	<form:form method="post" modelAttribute="user">
+		<div class="form-group">
+			<div class="row">
+				<div class="col-sm-8">
+					<h2>Register User</h2>
+					<hr>
+				</div>
 			</div>
 		</div>
-	</div>
-</form:form>
+		<div class="form-group">
+			<div class="row">
+				<div class="col-xs-6">
+					<form:input type="text" path="firstname" class="form-control"
+						placeholder="First Name" required="required" />
+						<form:errors path="email" cssStyle="help-inline" />
+				</div>
+				<div class="col-xs-6">
+					<form:input type="text" path="lastname" class="form-control"
+						placeholder="Last Name" required="required" />
+<form:errors path="email" cssStyle="help-inline" />
+				</div>
+			</div>
+		</div>
 
+		<div class="form-group">
+			<div class="row">
+				<form:input type="text" path="email" class="form-control"
+					required="required" placeholder="Email" />
+				<form:errors path="email" cssStyle="help-inline" />
+
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="row">
+				<form:select path="roleId" required="true"
+					class="form-control input-sm">
+					<form:option value="">Select Role</form:option>
+					<form:options items="${roles}" itemLabel="name" itemValue="id" />
+				</form:select>
+				<%-- <form:errors path="genreId" cssStyle="help-inline" /> --%>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="row">
+				<div class="form-group">
+					<form:input type="password" path="password" class="form-control"
+						placeholder="Password" />
+					<form:errors path="email" cssStyle="help-inline" />
+				</div>
+			</div>
+		</div>
+
+		<div class="from-group">
+			<div class="row">
+				<input class="btn btn-success btn-lg btn-block" type="submit"
+					value="Register">
+			</div>
+		</div>
+	</form:form>
+</div>
 <%@ include file="footer.jsp"%>
