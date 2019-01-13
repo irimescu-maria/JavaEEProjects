@@ -19,10 +19,5 @@ public class RoleServiceImpl implements RoleService{
 		
 		return roleRepository.findAll();
 	}
-	
-/*	@Override
-	public Role findRoleById(Long id) {
-		
-		return roleRepository.findById(id);
-	*/
+
 }

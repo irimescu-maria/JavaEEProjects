@@ -7,27 +7,34 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-
+@Entity(name = "rental")
 public class Rental {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
-	
+
+	@OneToOne
+	@JoinColumn(name = "userId")
 	private User user;
-		
+
+	@OneToOne
+	@JoinColumn(name = "movieId")
 	private Movie movie;
-	
+
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	private Date dateRented;
-	
+
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	private Date dateReturned;
@@ -71,5 +78,5 @@ public class Rental {
 	public void setDateReturned(Date dateReturned) {
 		this.dateReturned = dateReturned;
 	}
-	
+
 }

@@ -6,22 +6,7 @@
 
 <h2>Rent form</h2>
 <form:form method="post" modelAttribute="rent">
-	<div class="row">
-		<label class="control-label col-md-3" for="user">User</label>
-		<div class="col-md-7">
-			<form:input type="text" path="user" class="form-control input-sm" />
-			<form:errors path="user" cssStyle="help-inline" />
-		</div>
-	</div>
-
-	<div class="row">
-		<label class="control-label col-md-3" for="movie">Movie</label>
-		<div class="col-md-7">
-			<form:input type="text" path="movie" class="form-control input-sm" />
-			<form:errors path="user" cssStyle="help-inline" />
-		</div>
-	</div>
-
+	
 	<div class="row">
 		<label class="control-label col-md-3" for="dateRented">Date
 			Rented</label>

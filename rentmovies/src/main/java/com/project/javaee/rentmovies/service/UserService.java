@@ -10,9 +10,11 @@ public interface UserService {
 	
 	public User findUserByFirstname(String firstname);
 	
-
+	
 	
 	public User saveUser(User user);
 	
 	public User loginUser(String email, String password);
+
+	public User findById(Long id);
 }

@@ -1,6 +1,5 @@
 package com.project.javaee.rentmovies.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -16,14 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.project.javaee.rentmovies.dto.MovieDTO;
-import com.project.javaee.rentmovies.dto.RentalDTO;
 import com.project.javaee.rentmovies.dto.UserDTO;
 import com.project.javaee.rentmovies.model.Movie;
 import com.project.javaee.rentmovies.model.Rental;
 import com.project.javaee.rentmovies.model.Role;
 import com.project.javaee.rentmovies.model.User;
 import com.project.javaee.rentmovies.service.MovieService;
+import com.project.javaee.rentmovies.service.RentalService;
 import com.project.javaee.rentmovies.service.RoleService;
 import com.project.javaee.rentmovies.service.UserService;
 
@@ -39,6 +37,9 @@ public class UserController {
 
 	@Autowired
 	private RoleService roleService;
+	
+	@Autowired
+	private RentalService rentalService;
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -56,27 +57,22 @@ public class UserController {
 	public String login(@Valid @ModelAttribute("user") User user, @RequestParam("email") String email,
 			@RequestParam("password") String password, HttpSession session, Model model) {
 
-		// Read parameters from request.
-		/*
-		 * String email = request.getParameter("email"); String password =
-		 * request.getParameter("password");
-		 */
-		// user = userService.loginUser(email, password);
 		user = userService.loginUser(email, password);
-		System.err.println("======================================= user: " + user.getRole().getName());
 
 		if ("ADMIN".equals(user.getRole().getName())) {
+
 			session.setAttribute("user", user);
 			return "redirect:/movies";
+
 		} else {
 			session.setAttribute("user", user);
-			// model.addAttribute("user", user);
 			return "redirect:/home";
 		}
 	}
 
 	@RequestMapping(value = "logout", method = RequestMethod.GET)
 	public String logout(HttpSession session) {
+		
 		session.removeAttribute("email");
 		return "redirect:/login";
 	}
@@ -88,14 +84,15 @@ public class UserController {
 		model.addAttribute("roles", roles);
 
 		UserDTO user = new UserDTO();
-
 		model.addAttribute("user", user);
 
 		return "signup";
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public String createUser(@Valid @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult, Model model) {
+	public String createUser(@Valid @ModelAttribute("user") UserDTO userDTO, 
+			BindingResult bindingResult, Model model,
+			HttpSession session) {
 		User userExists = userService.findUserByEmail(userDTO.getEmail());
 
 		if (userExists != null) {
@@ -119,66 +116,51 @@ public class UserController {
 			user.setRole(new Role(userDTO.getRoleId()));
 			userService.saveUser(user);
 
-			if (user.getEmail().contains("admin")) {
-
+			if ("ADMIN".equals(user.getRole().getName())) {
+				session.setAttribute("user", user);
 				return "redirect:/movies";
 			} else {
+				session.setAttribute("user", user);
 				return "redirect:/home";
 			}
 		}
 	}
-
+/*
 	@RequestMapping(value = "/rent", method = RequestMethod.GET)
-	public String rentMovie(Model model,
-			HttpSession session) {
+	public String rentMovie(Model model, HttpSession session) {
 
-		/*
-			User user = (User) session.getAttribute("user");
-			
-			RentalDTO rentalDTO = new RentalDTO();
-			session.setAttribute("user", user);
-		//	rentalDTO.setMovie();
-			rentalDTO.setUser(user);
-			rentalDTO.getDateRented();
-			rentalDTO.getDateReturned();
-			
-			model.addAttribute("rent", rentalDTO);
-			model.addAttribute("user", user);*/
-		/*Rental rent = new Rental();
-		model.addAttribute("rent", rent);*/
+		  User user = (User) session.getAttribute("user");
+		  model.addAttribute("user", user);
+
+		  Rental rent = new Rental(); 
+		  model.addAttribute("rent", rent);
+		 
 		return "rent";
-	}
+	}*/
 
-	@RequestMapping(value = "/rent", method = RequestMethod.POST)
-	public String rentForm(@Valid @ModelAttribute("rental") Rental rental, BindingResult result,
-			MovieDTO movieDTO, Model model) {
-		
-		/*List<Movie> movies = movieService.findAllMovies();
-		User user = new User();
-		Movie movie = new Movie();
-		for (Movie item : movies) {
-			int count = item.getNumberAvailable();
-			if (item.getNumberAvailable() == 0) {
-				result.reject("Movie is not available");
-			}
-			count--;
-			movie = movieService.findMovie(id);
-			if(movie != null) {
-				movie.setNumberAvailable(count);
-			}
-			
-			
-			Rental rent = new Rental();
-			rent.setUser(user);
-			rent.setMovie(movie);
-			rent.setDateRented(new Date());
-			rent.setDateReturned(new Date());
-			
-			model.addAttribute("rent", rent);
-			return "home";
+	@RequestMapping(value = "/rent")
+	public String rentForm(@RequestParam(value = "id", required = true) Long id, HttpSession session) {
+
+		User user = (User) session.getAttribute("user");
+		if (user == null) {
+			return "redirect:/login";
 		}
-		*/
-		return null;
-		
+				
+		Movie movie = movieService.findMovie(id);
+		user = userService.findById(user.getId());
+
+		int count = movie.getNumberInStock();
+		if(movie != null) {
+			count--;
+			movie.setNumberInStock(count);
+			Rental rental = new Rental();
+			rental.setUser(user);
+			rental.setMovie(movie);
+			movieService.update(movie);
+			rentalService.save(rental);
+			
+			return "redirect:/home";
+		}
+				return null;
 	}
 }
