@@ -18,20 +18,18 @@ import com.project.javaee.rentmovies.model.User;
 import com.project.javaee.rentmovies.repository.RoleRepository;
 import com.project.javaee.rentmovies.repository.UserRepository;
 
-
 @Service("userService")
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Autowired
 	RoleRepository roleRepository;
-	
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	
+
 	@Override
 	public User findUserByEmail(String email) {
 		return userRepository.findByEmail(email);
@@ -40,8 +38,8 @@ public class UserServiceImpl implements UserService{
 	@Override
 	@Transactional
 	public User saveUser(User user) {
-	userRepository.save(user);
-return user;
+		userRepository.save(user);
+		return user;
 	}
 
 	@Override
@@ -54,11 +52,12 @@ return user;
 	@Override
 	@Transactional
 	public User loginUser(String email, String password) {
-		
+
 		User user = this.findUserByEmail(email);
 
-	//	String encodePassword = passwordEncoder.encode(password);
-		if(user != null && passwordEncoder.matches(password, user.getPassword().toString()) && user.getEmail().equals(email)) {
+		// String encodePassword = passwordEncoder.encode(password);
+		if (user != null && passwordEncoder.matches(password, user.getPassword().toString())
+				&& user.getEmail().equals(email)) {
 			return user;
 		}
 		return null;

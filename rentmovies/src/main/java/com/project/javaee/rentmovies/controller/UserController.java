@@ -1,5 +1,7 @@
 package com.project.javaee.rentmovies.controller;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.project.javaee.rentmovies.dto.UserDTO;
 import com.project.javaee.rentmovies.model.Movie;
@@ -37,7 +41,7 @@ public class UserController {
 
 	@Autowired
 	private RoleService roleService;
-	
+
 	@Autowired
 	private RentalService rentalService;
 
@@ -72,7 +76,7 @@ public class UserController {
 
 	@RequestMapping(value = "logout", method = RequestMethod.GET)
 	public String logout(HttpSession session) {
-		
+
 		session.removeAttribute("email");
 		return "redirect:/login";
 	}
@@ -90,8 +94,7 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public String createUser(@Valid @ModelAttribute("user") UserDTO userDTO, 
-			BindingResult bindingResult, Model model,
+	public String createUser(@Valid @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult, Model model,
 			HttpSession session) {
 		User userExists = userService.findUserByEmail(userDTO.getEmail());
 
@@ -125,42 +128,45 @@ public class UserController {
 			}
 		}
 	}
-/*
-	@RequestMapping(value = "/rent", method = RequestMethod.GET)
-	public String rentMovie(Model model, HttpSession session) {
-
-		  User user = (User) session.getAttribute("user");
-		  model.addAttribute("user", user);
-
-		  Rental rent = new Rental(); 
-		  model.addAttribute("rent", rent);
-		 
-		return "rent";
-	}*/
 
 	@RequestMapping(value = "/rent")
-	public String rentForm(@RequestParam(value = "id", required = true) Long id, HttpSession session) {
+	@ResponseBody
+	public String rentForm(@RequestParam(value = "id", required = true) Long id, HttpSession session,
+			RedirectAttributes redirectAttributes) {
 
 		User user = (User) session.getAttribute("user");
 		if (user == null) {
 			return "redirect:/login";
 		}
-				
+
 		Movie movie = movieService.findMovie(id);
 		user = userService.findById(user.getId());
 
 		int count = movie.getNumberInStock();
-		if(movie != null) {
-			count--;
+
+		// Add 10 days tocurrent date
+		Date date = new Date();
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE, 10);
+		date = calendar.getTime();
+
+		count--;
+		if (count > 0) {
 			movie.setNumberInStock(count);
+
 			Rental rental = new Rental();
 			rental.setUser(user);
 			rental.setMovie(movie);
+			rental.setDateRented(new Date());
+			rental.setDateReturned(date);
 			movieService.update(movie);
 			rentalService.save(rental);
-			
-			return "redirect:/home";
+
+			redirectAttributes.addFlashAttribute("message",
+					"You are rented the movie " + movie.getName() + " until " + rental.getDateRented());
 		}
-				return null;
+		return "redirect:/home";
+
 	}
 }

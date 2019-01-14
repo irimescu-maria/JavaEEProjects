@@ -24,11 +24,6 @@
 
 		</div>
 
-		<div class="checkbox mb-2">
-			<label> <input type="checkbox" name="remember-me" />
-				Remember me
-			</label>
-		</div>
 		<div colspan="2" align="center">
 			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign
 				in</button>

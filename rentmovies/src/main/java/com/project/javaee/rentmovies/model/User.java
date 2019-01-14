@@ -28,8 +28,8 @@ public class User {
 	@Column(name = "password")
 	private String password;
 	
-	@Column(name = "active")
-	private int active;
+/*	@Column(name = "active")
+	private int active;*/
 	
 	@ManyToOne
 	@JoinColumn(name = "roleId", nullable = false)
@@ -79,13 +79,13 @@ public class User {
 		this.password = password;
 	}
 
-	public int getActive() {
+	/*public int getActive() {
 		return active;
 	}
 
 	public void setActive(int active) {
 		this.active = active;
-	}
+	}*/
 
 	public Role getRole() {
 		return role;

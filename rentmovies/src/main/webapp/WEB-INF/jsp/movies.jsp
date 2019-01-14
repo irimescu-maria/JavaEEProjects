@@ -1,15 +1,20 @@
 <%@ include file="header.jsp"%>
-
-<h1>List of Movies</h1>
-<c:if test="${not empty messge}">
+<c:if test="${not empty message}">
 	<div class="alert alert-success">${message}</div>
 </c:if>
+
+<c:if test="${not empty errorMessage}">
+	<div class="alert alert-danger">${errorMessage}</div>
+</c:if>
+
+<h1>List of Movies</h1>
+
 
 <div>
 	<a href="<c:url value='movies/add'/>" class="btn btn-info">Add new
 		movie</a>
 </div>
-${message}
+<%-- ${message} --%>
 <table class="table">
 	<thead>
 		<tr>
@@ -38,9 +43,10 @@ ${message}
 					alt="${movie.imagePath}" width="100px" height="70px" /></td>
 				<td>${movie.genre.name}</td>
 				<td><a href="<c:url value='movie/edit?id=${movie.id}'/>"
-					class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span>  Edit</a> | <a
-					href="<c:url value='movie/delete?id=${movie.id}'/>"
-					class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>  Delete</a></td>
+					class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span>
+						Edit</a> | <a href="<c:url value='movie/delete?id=${movie.id}'/>"
+					class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>
+						Delete</a></td>
 			</tr>
 		</c:forEach>
 	</tbody>

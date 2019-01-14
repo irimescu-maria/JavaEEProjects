@@ -46,8 +46,13 @@ public class MovieController {
 	private GenreService genreService;
 
 	@RequestMapping(value = "/movies", method = RequestMethod.GET)
-	public String getMovies(Model model) {
-
+	public String getMovies(Model model, HttpSession session) {
+		
+		User user = (User) session.getAttribute("user");
+		if(user == null) {
+			return "redirect:/login";
+		}
+		
 		List<Movie> movies = movieService.findAllMovies();
 		model.addAttribute("movies", movies);
 
@@ -108,8 +113,13 @@ public class MovieController {
 
 	@RequestMapping(value = "/movie/edit", method = RequestMethod.GET)
 	public String getEditMovie(@RequestParam(value = "id", required = true) Long id, Model model,
-			RedirectAttributes redirectAttributes) {
+			RedirectAttributes redirectAttributes, HttpSession session) {
 
+		User user = (User) session.getAttribute("user");
+		if(user == null) {
+			return "redirect:/login";
+		}
+		
 		Movie movie = movieService.findMovie(id);
 
 		if (movie != null/* && nameImage != null */) {
